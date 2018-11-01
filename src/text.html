@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TEST</title>
+    <link href="./layui/css/layui.css" rel="stylesheet" />
+    <script src="./js/jquery-3.3.1.js"></script>
+    <script src="./layui/layui.all.js"></script>
+
+</head>
+<style>
+    body {
+        /* font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', Arial, sans-serif;
+        font: 12px/1 Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif; */
+        /* font: 12px/1 Tahoma,Helvetica,Arial,"\5b8b\4f53",sans-serif; */
+        /* font: 14px/1.5 'Microsoft YaHei',arial,tahoma,\5b8b\4f53,sans-serif; */
+        /* font: 12px/1.5 Tahoma,Helvetica,Arial,'宋体',sans-serif; */
+        font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+    }
+</style>
+
+<body>
+    <p>这是一段专门用来测试字体的一句话。，；</p>
+    <p>This IS a sentence designed to test the FONT . , ; </p>
+
+    <form id="maindiv" style="margin-top:70px;">
+        <div id="contentdiv">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>上传多张图片</legend>
+            </fieldset>
+            <div class="layui-upload">
+                <button type="button" class="layui-btn" id="test">多图片上传</button>
+                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                    预览图：
+                    <div class="layui-upload-list" id="demo"></div>
+                </blockquote>
+            </div>
+        </div>
+    </form>
+    <input type="button" class="layui-btn" value="添加一个" onclick="Add()">
+</body>
+
+<script>
+    var sort = 1;
+    layui.use(['form', 'upload'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            upload = layui.upload;
+
+        picupload("#test", "#demo")
+
+        function picupload(id, pic) {
+            upload.render({
+                elem: id,
+                url: '/Upload/UploadFiles',
+                multiple: true,
+                before: function (obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function (index, file, result) {
+                        $(pic).append('<img src="' + result + '" alt="' + file.name +
+                            '" class="layui-upload-img" style="width:184px;height:135px">'
+                        )
+                    });
+                },
+                done: function (res) {
+                    //上传完毕
+                }
+            });
+        }
+        window.Add = function () {
+            var recoder = $("#contentdiv").clone();
+            recoder.find(".layui-btn").attr("id", "test" + sort + "");
+            recoder.find(".layui-upload-list").attr("id", "demo" + sort + "");
+            recoder.find(".layui-upload-list").empty();
+            $("#maindiv").append(recoder);
+            picupload("#test" + sort + "", "#demo" + sort + "")
+            sort++;
+        }
+    })
+</script>
+
+</html>

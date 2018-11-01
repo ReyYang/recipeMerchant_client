@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./layui/css/layui.css">
+    <link rel="stylesheet" href="./css/login.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_854029_oi47shln78d.css">
+    <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+    <script src="./js/jquery-3.3.1.js"></script>
+    <title>LOGIN</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-banner">
+            <!-- 如果banner背景是图片，此div是为banner添加蒙版 -->
+            <div id="masking"></div>
+            <div class="banner-logo-div">
+                <img src="./images/logo-dark-02.png" alt="" id="banner-logo">
+                <h2 class="banner-title">商家入驻系统</h2>
+            </div>
+            <div class="banner-logo-div">
+                <img src="./images/logo-dark-smile.png" alt="" id="banner-logo-smile">
+            </div>
+        </div>
+        <div class="right-div">
+            <div class="right-form-div">
+                <div class="project-title">
+                    <h1>登录膳食膳房</h1>
+                </div>
+                <form action="" class="layui-form">
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-md3">
+                            <label class="layui-form-label mylayui-form-label">用户名：</label>
+                        </div>
+                        <div class="layui-col-md9 mylayui-form-div">
+                            <i class="layui-icon layui-icon-username mylayui-input-icon"></i>
+                            <input type="text" name="account" id="account" required lay-verify="account" placeholder="手机号/邮箱"
+                                autocomplete="off" class="layui-input mylayui-input">
+                        </div>
+                    </div>
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-md3">
+                            <label class="layui-form-label  mylayui-form-label">密码：</label>
+                        </div>
+                        <div class="layui-col-md9 mylayui-form-div">
+                            <i class="layui-icon layui-icon-password mylayui-input-icon"></i>
+                            <i class="showpwd iconfont icon-yanjing"></i>
+                            <input type="password" id="password"  name="password" required lay-verify="required" placeholder="请输入密码"
+                                autocomplete="off" class="layui-input mylayui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-row">
+                        <div class="layui-col-md12 mylayui-form-div">
+                            <button class="layui-btn mylayui-btn" lay-submit lay-filter="login">立即登陆</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-row">
+                        <div class="layui-col-md4 layui-col-md-offset8 mylayui-form-a">
+                            <a href="#">注册</a>
+                            <a href="#">忘记密码</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script src="./layui/layui.js"></script>
+<script src="./js/login.js"></script>
+
+</html>
