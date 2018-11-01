@@ -273,6 +273,7 @@ $(function () {
                 '   </div>',
                 '</li>'
             ].join('');
+            
             var index = $(".addModel-div-confirm").index($(this));
             $(this).parent('.addModel-footer').siblings('section').find('.layui-form-checked span').each(
                 function (indexInArray, valueOfElement) {
