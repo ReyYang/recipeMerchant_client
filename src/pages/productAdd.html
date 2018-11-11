@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/productAdd.css">
     <link rel="stylesheet" href="//at.alicdn.com/t/font_854029_oi47shln78d.css">
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <script src="../js/public.js"></script>
     <script src="../js/jquery-3.3.1.js"></script>
     <title>商品添加</title>
 </head>
@@ -92,13 +93,13 @@
                                 <div class="mylayui-form-div">
                                     <label class="mylayui-form-label">搜索商品</label>
                                     <div class="mylayui-div-control">
-                                        <input type="text" name="title" required lay-verify="required" placeholder="请输入标题"
-                                            autocomplete="off" class="layui-input">
+                                        <input type="text" name="search_product_name" required lay-verify="required"
+                                            placeholder="请输入标题" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="mylayui-form-div">
                                     <div class="mylayui-div-control">
-                                        <button class="layui-btn btn-search" lay-submit lay-filter=""><i class="layui-icon layui-icon-search"></i></button>
+                                        <button class="layui-btn btn-search" lay-submit lay-filter="search-"><i class="layui-icon layui-icon-search"></i></button>
                                     </div>
                                 </div>
                             </form>
@@ -114,31 +115,35 @@
             </fieldset>
             <div class="form-div">
                 <form action="" class="productAdd-form layui-form">
+                    <!-- 多图片上传 -->
                     <div class="layui-upload">
                         <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
                             预览图：
                             <div class="layui-upload-list" id="demo2">
-                                <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
+                                <input id="nameImage" name="imglist[0]" maxlength="255" class="input-xlarge" type="hidden">
                             </div>
                         </blockquote>
                         <button type="button" class="layui-btn layui-btn-warm" id="moreImgupload">多图片上传</button>
                         <span style="font-size:12px;color: #bebcbc;">建议尺寸 800x800；</span>
                     </div>
-
+                    <!-- 商品名称 -->
                     <div class="layui-form-item productTitle-div">
                         <label class="layui-form-label" style="box-sizing: content-box;">商品名称：</label>
                         <div class="layui-input-block">
-                            <textarea name="title" id="productTitle" cols="30" rows="10" placeholder="请输入商品标题" class="layui-input product-name"
+                            <textarea name="product_title" id="productTitle" cols="30" rows="10" placeholder="请输入商品标题" class="layui-input product-name"
                                 lay-verify="required"></textarea>
                             <p><span id="text-count">0</span>/60</p>
                         </div>
                     </div>
-
+                    <!-- 商品类型 -->
                     <div class="layui-form-item">
                         <label class="layui-form-label" style="box-sizing: content-box;">商品类型：</label>
                         <div class="layui-input-block layui-form-select">
                             <select name="productClassify" lay-verify="required">
                                 <option value="">请选择商品类型</option>
+                                <option value="蔬菜">蔬菜</option>
+                                <option value="肉类">肉类</option>
+                                <option value="厨房用具">厨房用具</option>
                             </select>
                         </div>
                     </div>
@@ -152,7 +157,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label" style="box-sizing: content-box;">商品价格：</label>
                             <div class="layui-input-block">
-                                <input type="text" name="price" lay-verify="price" pla`ceholder="请输入价格" class="layui-input product-price">
+                                <input type="text" name="price" lay-verify="price" placeholder="请输入价格" class="layui-input product-price">
                                 <span>元</span>
                             </div>
                         </div>
@@ -170,7 +175,7 @@
                             </div>
                         </div>
                     </div>
-
+                    <!-- 默认隐藏 -->
                     <div id="showModel" style="display:none;">
                         <div class="layui-form-item">
                             <label class="layui-form-label" style="box-sizing: content-box;">商品型号：</label>
@@ -178,19 +183,16 @@
                                 <div class="layui-card product-card">
                                     <div class="layui-card-header product-div-model-title">
                                         <div class="div_select" style="width:150px; display: inline-block;">
-                                            <select name="productClassify" lay-verify="required" lay-filter="choose_classify">
+                                            <select name="productClassify" lay-filter="choose_classify">
                                                 <option value="" selected>请选择型号分类</option>
                                                 <option value="重量">重量</option>
                                                 <option value="尺寸">尺寸</option>
                                                 <option value="材质">材质</option>
-                                                <optgroup label="自定义型号分类">
-                                                    <option value="0">自定义</option>
-                                                </optgroup>
                                             </select>
                                         </div>
                                         <div style="display: inline-block;">
                                             <div class="addModelImg">
-                                                <input type="checkbox" name="addimg" lay-skin="switch" lay-text="添加图片|添加图片"
+                                                <input type="checkbox" name="" lay-skin="switch" lay-text="添加图片|添加图片"
                                                     style="height: 60px;" lay-filter="appendImg">
                                             </div>
                                         </div>
@@ -203,6 +205,7 @@
                                                 <div class="addModel-div">
                                                     <i id="arrow" class="layui-icon layui-icon-up"></i>
                                                     <section class="addmodel-section">
+                                                        <!-- 可根据数据库生成 -->
                                                         <div class="section-model-li">
                                                             <div class="model-name-div">
                                                                 <input class="modelName" type="checkbox" name="" title="0"
@@ -214,7 +217,7 @@
                                                     <hr>
                                                     <div class="model-name-input">
                                                         <label class="layui-form-label" style="box-sizing: content-box;width: auto;">添加型号</label>
-                                                        <input type="text" name="title" placeholder="输入型号" class="layui-input model-name"
+                                                        <input type="text" name="" placeholder="输入型号" class="layui-input model-name"
                                                             style="width: 230px;display: inline-block;">
                                                         <a href="" class="addmodel-name-btn addmodel-name-btn-add">添加</a>
                                                         <a href="" class="addmodel-name-btn addmodel-name-btn-cencle">取消</a>
@@ -228,11 +231,11 @@
 
                                         </ul>
                                         <hr>
-                                        <div>
+                                        <!-- <div>
                                             <div class="addModel-btn-div">
                                                 <button class="layui-btn layui-btn-primary addModelClassify" type="button">添加型号分类</button>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -240,48 +243,86 @@
                         <div class="noshowtable layui-form-item">
                             <label class="layui-form-label" style="box-sizing: content-box; padding-right: 0;width: 85px;;">价格与库存：</label>
                             <div class="layui-input-block">
-                                <table id="modeltable" style="padding:0 10px;"></table>
+                                <table id="modeltable" style="padding:0 10px;" lay-filter="parse-table" lay-data="{id: 'idTable'}">
+                                    <thead id="table_data_head">
+                                        <tr>
+                                            <th id="thisTop" lay-data="{field:'product_op_price',width: 130,align: 'center', title: '价格',templet:'#table_input'}"></th>
+                                            <th lay-data="{field:'product_op_repertory',width: 130,align: 'center', title: '库存',templet:'#table_input'}"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table_data_body">
+                                    </tbody>
+                                </table>
                             </div>
+                        </div>
+                    </div>
+
+                    <hr style="margin-top: 50px;margin-bottom: 50px;border: 1px solid #e6e6e6;">
+
+                    <!-- 运费模块 -->
+                    <div class="carriage_div">
+                        <fieldset class="layui-elem-field layui-field-title">
+                            <legend>运费/其他</legend>
+                        </fieldset>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="box-sizing: content-box; padding-right: 0;width: 85px;;">运费设置</label>
+                            <div class="layui-input-block" style="width: 380px;">
+                                <select name="carriage" lay-filter="carriage">
+                                    <option value="">默认运费模板</option>
+                                    <option value="1">包邮（全国免邮费）</option>
+                                    <option value="2">包邮-除偏远地区（海南,西藏,新疆,香港,澳门,内蒙古,台湾,宁夏,甘肃,青海）</option>
+                                    <option value="3">默认运费模版（10件内0元,每增加1件,增加运费0元）</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="box-sizing: content-box; padding-right: 0;width: 85px;;">开售时间</label>
+                            <div class="layui-input-block cell-time">
+                                <input type="radio" name="sex" value="now" title="立刻开售" checked>
+                                <div id="choose-time">
+                                    <input type="radio" name="sex" value="settime" title="定时开售" checked>
+                                    <input type="text" class="layui-input" id="time_pick" name="time_pick" placeholder="选择开售时间"
+                                        style="display: inline-block; width: 200px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="box-sizing: content-box; padding-right: 0;width: 85px;;">其他设置</label>
+                            <div class="layui-input-block other-set-div">
+                                <input type="checkbox" name="join_party" title="参加活动" lay-skin="primary" checked>
+                                <input type="checkbox" name="manager_hot" title="店长推荐" lay-skin="primary">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="margin-top: 50px;margin-bottom: 50px;border: 1px solid #e6e6e6;">
+
+                    <div class="product_details">
+                        <fieldset class="layui-elem-field layui-field-title">
+                            <legend>商品详情</legend>
+                        </fieldset>
+                        <div class="product_details_div" style="padding: 0px 50px;">
+                            <div id="add_product_details_div">
+                                <span style="font-size:15px; padding-left: 15px;">添加商品详情</span>
+                                <button type="button" class="layui-btn layui-btn-primary add_product_details_btn" style="margin-left: 15px;">
+                                    <i class="layui-icon layui-icon-add-1"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="margin-top: 50px;margin-bottom: 50px;border: 1px solid #e6e6e6;">
+
+                    <div class="layui-form-item" style="text-align: center;">
+                        <div>
+                            <button class="layui-btn layui-btn-warm layui-btn-lg" lay-submit lay-filter="submin_btn"
+                                style="width:180px;">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary layui-btn-lg" style="width:180px;">重置</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-        <button id="testBTN">测试json</button>
-        <script>
-            var students = new Array();
-            var books = new Array();
-            var book = new Object();
-            book.name = "book1";
-            book.price = 89.11;
-
-            var book1 = new Object();
-            book1.name = "book2";
-            book1.price = 89.11;
-
-            var book2 = new Object();
-            book2.name = "book2";
-            book2.price = 89.11;
-            var student = new Object(); 
-            student.name = "Lanny"; 
-            student.age = "25"; 
-            student.location = books; 
-
-            var student1 = new Object(); 
-            student1.name = "henry"; 
-            student1.age = "26"; 
-            student1.location = books; 
-            students.push(student);
-            students.push(student1);
-            books.push(book);
-            books.push(book1);
-            books.push(book2);
-            var json = JSON.stringify(students[1]);
-            $('#testBTN').click(function(e){
-                e.preventDefault();
-                console.log('json ：', json);
-            });
-        </script>
+        <!-- <button id="testJSON">test</button> -->
         <div>
             <div class="footer">
                 <div class="foot-link">
@@ -328,7 +369,10 @@
                                 <i class="layui-icon layui-icon-close"></i>
                             </a>
                         </div>
-                    </script>
+                </script>
+                <script type="text/html" id="table_input">
+                    <input type="text" style="width:80px; border: 1px solid #f1f1f1;">
+                </script>
             </div>
         </div>
     </div>

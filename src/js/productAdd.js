@@ -1,46 +1,5 @@
 $(function () {
     var BODY = $('body');
-    var t_cols = new Array();
-    var t_data = [];
-    var Classify = [{
-        "marque": "重量",
-        "model": [{
-                "name": "2500g"
-            },
-            {
-                "name": "5000g"
-            },
-            {
-                "name": "7500g"
-            }
-        ]
-    }, {
-        "marque": "尺寸",
-        "model": [{
-                "name": "15cm"
-            },
-            {
-                "name": "25cm"
-            },
-            {
-                "name": "35cm"
-            }
-        ]
-    }, {
-        "marque": "材质",
-        "model": [{
-                "name": "不锈钢"
-            },
-            {
-                "name": "竹制"
-            }
-        ]
-    }]
-
-    function gettabledata() {
-        var Classifycols = {};
-        var Classifydata = {};
-    }
     //屏幕滚动时事件（导航条）
     $(window).scroll(function () {
         var topp = 50 - BODY.scrollTop();
@@ -49,6 +8,7 @@ $(function () {
     //打开商品类型面板
     $('#showModel-btn').click(function (e) {
         e.preventDefault();
+        $('#modeldefault').find('input').attr('lay-verify','');
         $('#modeldefault').attr('style', 'display:none;');
         $('#showModel').attr('style', 'display:block;');
     });
@@ -74,9 +34,6 @@ $(function () {
         '               <option value="重量">重量</option>',
         '               <option value="尺寸">尺寸</option>',
         '               <option value="材质">材质</option>',
-        '               <optgroup label="自定义型号分类">',
-        '                   <option value="0">自定义</option>',
-        '               </optgroup>',
         '           </select>',
         '       </div>',
         '       <div style="display: inline-block;">',
@@ -114,29 +71,24 @@ $(function () {
         '           </li>',
         '       </ul>',
         '       <hr>',
-        '       <div>',
-        '           <div class="addModel-btn-div">',
-        '               <button class="layui-btn layui-btn-primary addModelClassify" type="button">添加型号分类</button>',
-        '           </div>',
-        '       </div>',
         '   </div>',
         '</div>'
     ].join('');
     //添加商品型号面板
-    BODY.on('click', '.addModelClassify', function (e) {
-        e.preventDefault();
-        var lay = layui.layer;
-        var layform = layui.form;
-        layform.render();
-        if ($('.product-cards').children().length >= 3) {
-            lay.msg("最多只能有3个商品型号哦！");
-        } else {
-            // $('.product-cards').append(showModelDiv.clone());
-            $(this).css('display', 'none');
-            $('.product-cards').append(showModelDiv);
-            layform.render();
-        }
-    });
+    // BODY.on('click', '.addModelClassify', function (e) {
+    //     e.preventDefault();
+    //     var lay = layui.layer;
+    //     var layform = layui.form;
+    //     layform.render();
+    //     if ($('.product-cards').children().length >= 3) {
+    //         lay.msg("最多只能有3个商品型号哦！");
+    //     } else {
+    //         // $('.product-cards').append(showModelDiv.clone());
+    //         $(this).css('display', 'none');
+    //         $('.product-cards').append(showModelDiv);
+    //         layform.render();
+    //     }
+    // });
     //关闭商品型号面板
     BODY.on('click', '.closeModel', function (e) {
         e.preventDefault();
@@ -152,7 +104,14 @@ $(function () {
     //添加型号
     BODY.on('click', '.addMarque', function (e) {
         e.preventDefault();
-        $(this).siblings('.addModel-div').css('display', 'block');
+        var index = $('.addMarque').index($(this));
+        var text = $($('.div_select').get(index)).find('dl.layui-anim dd.layui-this').text();
+        console.log(text);
+        if (text == '请选择型号分类' || text == '') {
+            layer.msg('请先选择型号分类');
+        } else {
+            $(this).siblings('.addModel-div').css('display', 'block');
+        }
     });
     //添加型号输入框取消清空
     BODY.on('click', '.addmodel-name-btn-cencle', function (e) {
@@ -223,37 +182,103 @@ $(function () {
         e.preventDefault();
         $(this).parent('.section-model-li').remove();
     });
-    //删除型号面板的型号
-    BODY.on('click', '.model-li-close', function (e) {
+    //删除商品详情面板
+    BODY.on('click', '.pro_details .layui-card-header i', function (e) {
         e.preventDefault();
-        var form = layui.form;
-        var modelli = $([
-            '<div class="section-model-li">',
-            '   <div class="model-name-div">',
-            '       <input class="modelName" type="checkbox" name="" title="" lay-filter="modelName-filter">',
-            '   </div>',
-            '   <i class="layui-icon layui-icon-close model-li-del"></i>',
-            '</div>'
-        ].join(''));
-        var text = $(this).siblings('span').text();
-        $(this).parents('ul').find('section').append(modelli);
-        modelli.find('input').attr('title', text);
-        $(this).parents('.model-li').remove();
-        form.render();
+        $(this).parents('.pro_details').remove();
     });
 
 
-    layui.use(['element', 'form', 'upload', 'table'], function () {
+
+
+
+    layui.use(['element', 'form', 'upload', 'table', 'laydate'], function () {
         var $ = layui.jquery,
             upload = layui.upload,
             form = layui.form,
             layer = layui.layer,
-            table = layui.table;
+            table = layui.table,
+            laydate = layui.laydate;
         var upload_i = 0;
+
+        //添加商品详情页面
+        var pro_details =
+            '<div class="layui-card pro_details">\n' +
+            '    <div class="layui-card-header">\n' +
+            '        <h3 style="display: inline-block;">商品详情</h3>\n' +
+            '        <i class="layui-icon layui-icon-close"></i>\n' +
+            '    </div>\n' +
+            '    <div class="layui-card-body">\n' +
+            '        <div style="display:inline-block;vertical-align: top;" class="pro_details_image">\n' +
+            '            <h3 style="text-align: center;margin-bottom: 10px;">商品详情图片</h3>\n' +
+            '            <div>\n' +
+            '                <div class="nohave-img">\n' +
+            '                    <div class="upload-img-preview">\n' +
+            '                        <i class="layui-icon layui-icon-add-1"></i>\n' +
+            '                        <img src="" alt="" class="layui-upload-img">\n' +
+            '                    </div>\n' +
+            '                    <div class="upload-ops">\n' +
+            '                        <a href="javascript:;" class="imgSingleDel">删除</a>\n' +
+            '                    </div>\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '        <div style="display:inline-block;" class="pro_details_content">\n' +
+            '            <h3 style="text-align: center;margin-bottom: 10px;">商品详情文字</h3>\n' +
+            '            <textarea name="pro_details_content" id="" cols="100" rows="10" style="border:1px solid #bebcbc;padding: 15px;"></textarea>\n' +
+            '        </div>\n' +
+            '    </div>\n' +
+            '</div>';
+
+        //添加商品详情页面
+        BODY.on('click', '.add_product_details_btn', function (e) {
+            e.preventDefault();
+            $('#add_product_details_div').before(pro_details);
+            upload_i++;
+            // console.log(upload_i);
+            $('.product_details_div .pro_details:last').find('.upload-img-preview').attr('id', 'upload-img-preview-product' + upload_i);
+            onImgUpload_details('#upload-img-preview-product' + upload_i)
+        });
+        //删除型号面板的型号
+        BODY.on('click', '.model-li-close', function (e) {
+            e.preventDefault();
+            var form = layui.form;
+            var modelli = $([
+                '<div class="section-model-li">',
+                '   <div class="model-name-div">',
+                '       <input class="modelName" type="checkbox" name="" title="" lay-filter="modelName-filter">',
+                '   </div>',
+                '   <i class="layui-icon layui-icon-close model-li-del"></i>',
+                '</div>'
+            ].join(''));
+            var text = $(this).siblings('span').text();
+            var $thisli = $(this).parents('.addModelClassify-div');
+            var index = $('.addModelClassify-div').index($thisli);
+            // var arr = t_data[index].model.filter(function (item) {
+            //     return item.name == text;
+            // });
+            if ($('.model-li-close').length == 1) {
+                $('.showtable').addClass('noshowtable').removeClass('showtable');
+            }
+            //删除型号面板元素同时修改table数据
+            // t_data[index].model.splice(t_data[index].model.indexOf(arr[0]), 1);
+            $(this).parents('ul').find('section').append(modelli);
+            modelli.find('input').attr('title', text);
+            $(this).parents('.model-li').remove();
+            $('#table_data_body tr').each(function (index, item) {
+                if ($(this).children('td').text() == text) {
+                    $(this).remove();
+                }
+            });
+            tableInit();
+            form.render();
+        });
+
         //添加型号插入型号面板
         BODY.on('click', '.addModel-div-confirm', function (e) {
             e.preventDefault();
             //类型名内容
+            $('.noshowtable').addClass('showtable').removeClass('noshowtable');
             var addModelli = [
                 '<li class="model-li">',
                 '    <div class="li-div-modelname">',
@@ -273,7 +298,6 @@ $(function () {
                 '   </div>',
                 '</li>'
             ].join('');
-            
             var index = $(".addModel-div-confirm").index($(this));
             $(this).parent('.addModel-footer').siblings('section').find('.layui-form-checked span').each(
                 function (indexInArray, valueOfElement) {
@@ -292,22 +316,52 @@ $(function () {
                         $($('.addModelClassify-div').get(index)).children("ul").children("li:first-child").find('.li-span-name span').text($(this).text());
                         $(this).parents('.section-model-li').remove();
                         $($('.addModelClassify-div').get(index)).children("ul").children("li:first-child").find('.upload-img-preview').attr('id', 'upload-img-preview' + upload_i);
-                        // // t_data[index].model = tabeldata;
-                        // var obj = {
-                        //     model: tabeldata
-                        // }
-                        // t_data[index] = obj;
-                        // // var jsio = JSON.stringify(t_data);
-                        // // console.log(jsio);
                         onImgUpload('#upload-img-preview' + upload_i + '');
                     }
                 }
             );
-            // var jsio = JSON.stringify(t_data);
-            // console.log(t_data);
+            //添加型号面板型号时创建table数据
+            $('#table_data_body').empty(); //每次清空表格
+            var text = $($('.div_select').get(index)).find('dl.layui-anim dd.layui-this').text();
+            var flag = 'meiyou';
+            $('#table_data_head tr th').each(function (index, item) {
+                console.log($(this));
+                if ($(this).attr('thisName') == undefined) {
+                    var t_head = "<th thisName=" + text + " lay-data=" + "{field:'" + text + "',align:'center',title:'" + text + "'}></th>";
+                    $('#thisTop').before(t_head);
+                    flag = 'youle';
+                    return false;
+                }
+                if ($(this).attr('thisName') == text) {
+                    flag = 'youle';
+                    return false;
+                } else {
+                    flag = 'meiyou';
+                }
+            });
+            if (flag == 'meiyou') {
+                var t_head = "<th thisName=" + text + " lay-data=" + "{field:'" + text + "',align:'center',title:'" + text + "'}></th>";
+                $('#thisTop').before(t_head);
+            }
+            var rowspan = $($('.addModelClassify-div').get(index)).children('ul').find('li span.li-span-name span').length;
+            if ($('#table_data_body tr').length == 0) {
+                //判断初始表格为空时    
+                $($('.addModelClassify-div').get(index)).children('ul').find('li span.li-span-name span').each(function (index, element) {
+                    var text = $(this).text();
+                    var _data = [
+                        '<tr>',
+                        '<td>' + text + '</td>',
+                        '</tr>'
+                    ].join('');
+                    $('#table_data_body').append(_data);
+                    tableInit();
+                });
+            }
+
+
         });
 
-        
+
 
         function onImgUpload(element) {
             var uploadInst = upload.render({
@@ -319,7 +373,7 @@ $(function () {
                 choose: function (obj) {
                     var files = obj.pushFile();
                     var thisItem = $(this.item);
-                    var delindex = $('.upload-img-preview').index(thisItem);
+                    // var delindex = $('.upload-img-preview').index(thisItem);
                     console.log('thisItem :', thisItem);
                     //预读本地文件示例，不支持ie8
                     obj.preview(function (index, file, result) {
@@ -347,37 +401,71 @@ $(function () {
             });
         }
 
-        function merge(res) {
+        function onImgUpload_details(element) {
+            console.log(121111111);
+            var uploadInst = upload.render({
+                elem: element,
+                acceptMime: "images",
+                auto: false,
+                bindAction: '',
+                choose: function (obj) {
+                    var files = obj.pushFile();
+                    var thisItem = $(this.item);
+                    obj.preview(function (index, file, result) {
+                        thisItem.find('.layui-upload-img').attr('src', result); //图片链接（base64）
+                        setTimeout(() => {
+                            thisItem.parent('.nohave-img').addClass('have-img').removeClass('nohave-img');
+                        }, 100);    
+                        thisItem.children('i').css('display', 'none');
+                        thisItem.siblings('.upload-ops').css('display', 'block');
 
-            var data = res.data;
-            var mergeIndex = 0; //定位需要添加合并属性的行数
-            var mark = 1; //这里涉及到简单的运算，mark是计算每次需要合并的格子数
-            var columsName = ['重量', 'size']; //需要合并的列名称
-            var columsIndex = [0, 1]; //需要合并的列索引值
-
-            for (var k = 0; k < columsName.length; k++) { //这里循环所有要合并的列
-                var trArr = $(".layui-table-body>.layui-table").find("tr"); //所有行
-                for (var i = 1; i < res.data.length; i++) { //这里循环表格当前的数据
-                    var tdCurArr = trArr.eq(i).find("td").eq(columsIndex[k]); //获取当前行的当前列
-                    var tdPreArr = trArr.eq(mergeIndex).find("td").eq(columsIndex[k]); //获取相同列的第一列
-
-                    if (data[i][columsName[k]] === data[i - 1][columsName[k]]) { //后一行的值与前一行的值做比较，相同就需要合并
-                        mark += 1;
-                        tdPreArr.each(function () { //相同列的第一列增加rowspan属性
-                            $(this).attr("rowspan", mark);
+                        //删除
+                        thisItem.siblings('.upload-ops').find('.imgSingleDel').on('click', function (e) {
+                            e.preventDefault();
+                            setTimeout(() => {
+                                thisItem.parent('.have-img').addClass('nohave-img').removeClass('have-img');
+                            }, 100);
+                            thisItem.siblings('.upload-ops').css('display', 'none');
+                            thisItem.children('i').css('display', 'block');
+                            thisItem.find('.layui-upload-img').attr('src', ''); //图片链接（base64）
+                            delete files[index];
+                            uploadInst.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
                         });
-                        tdCurArr.each(function () { //当前行隐藏
-                            $(this).css("display", "none");
-                        });
-                    } else {
-                        mergeIndex = i;
-                        mark = 1; //一旦前后两行的值不一样了，那么需要合并的格子数mark就需要重新计算
-                    }
+                    });
                 }
-                mergeIndex = 0;
-                mark = 1;
-            }
+            });
         }
+        // 商品合并
+        // function merge(res) {
+        //     var data = res.data;
+        //     var mergeIndex = 0; //定位需要添加合并属性的行数
+        //     var mark = 1; //这里涉及到简单的运算，mark是计算每次需要合并的格子数
+        //     var columsName = ['重量', 'size']; //需要合并的列名称
+        //     var columsIndex = [0, 1]; //需要合并的列索引值
+
+        //     for (var k = 0; k < columsName.length; k++) { //这里循环所有要合并的列
+        //         var trArr = $(".layui-table-body>.layui-table").find("tr"); //所有行
+        //         for (var i = 1; i < res.data.length; i++) { //这里循环表格当前的数据
+        //             var tdCurArr = trArr.eq(i).find("td").eq(columsIndex[k]); //获取当前行的当前列
+        //             var tdPreArr = trArr.eq(mergeIndex).find("td").eq(columsIndex[k]); //获取相同列的第一列
+
+        //             if (data[i][columsName[k]] === data[i - 1][columsName[k]]) { //后一行的值与前一行的值做比较，相同就需要合并
+        //                 mark += 1;
+        //                 tdPreArr.each(function () { //相同列的第一列增加rowspan属性
+        //                     $(this).attr("rowspan", mark);
+        //                 });
+        //                 tdCurArr.each(function () { //当前行隐藏
+        //                     $(this).css("display", "none");
+        //                 });
+        //             } else {
+        //                 mergeIndex = i;
+        //                 mark = 1; //一旦前后两行的值不一样了，那么需要合并的格子数mark就需要重新计算
+        //             }
+        //         }
+        //         mergeIndex = 0;
+        //         mark = 1;
+        //     }
+        // }
 
         //多图片上传
         var demoListView = $('#demo2'),
@@ -477,10 +565,11 @@ $(function () {
         });
 
 
+        // form.on('select', function (data) {});
         form.on('select(choose_classify)', function (data) {
             var markclassify = 'youle';
             var index = $('select[lay-filter="choose_classify"]').index(data.elem);
-            var text = $($('.div_select').get(index)).find('dl.layui-select-group dd.layui-this').text();
+            var text = $($('.div_select').get(index)).find('dl.layui-anim dd.layui-this').text();
             var length = $('.div_select').length;
             $('.div_select').each(function (indexInArray, valueOfElement) {
                 if (length == 1) {
@@ -488,7 +577,7 @@ $(function () {
                 } else if (indexInArray == index) {
                     return true;
                 } else {
-                    var othertext = $($(this)).find('dl.layui-select-group dd.layui-this').text();
+                    var othertext = $($(this)).find('dl.layui-anim  dd.layui-this').text();
                     if (text == othertext) {
                         markclassify = 'youle';
                         return false;
@@ -501,124 +590,20 @@ $(function () {
                 layer.msg('商品型号不能重复');
             }
         });
-
-        //数据表格
-        table.render({
-            elem: '#modeltable',
-            page: false,
-            limit: 10000,
-            cols: [
-                [{
-                    field: "重量",
-                    // minWidth: 230,
-                    align: "center",
-                    title: Classify[0].marque
-                }, {
-                    field: "size",
-                    // minWidth: 230,
-                    align: "center",
-                    title: Classify[1].marque
-                }, {
-                    field: "texture",
-                    // minWidth: 230,
-                    align: "center",
-                    title: Classify[2].marque
-                }, {
-                    field: "product_op_price",
-                    // minWidth: 80,
-                    width: 130,
-                    align: "center",
-                    title: "价格",
-                    // fixed: "right",
-                    templet: '<div><input type="text" style="width:80px; border: 1px solid #f1f1f1;"></div>'
-                }, {
-                    field: "product_op_repertory",
-                    // minWidth: 80,
-                    width: 130,
-                    align: "center",
-                    title: "库存",
-                    // fixed: "right",
-                    templet: '<div><input type="text" style="width:80px; border: 1px solid #f1f1f1;"></div>'
-                }]
-            ],
-            data: [{
-                "重量": Classify[0].model[0].name, //第一个
-                "size": Classify[1].model[0].name,
-                "texture": Classify[2].model[0].name
-            }, {
-                "重量": Classify[0].model[0].name,
-                "size": Classify[1].model[0].name,
-                "texture": Classify[2].model[1].name
-
-            }, {
-                "重量": Classify[0].model[0].name,
-                "size": Classify[1].model[1].name,
-                "texture": Classify[2].model[0].name
-            }, {
-                "重量": Classify[0].model[0].name,
-                "size": Classify[1].model[1].name,
-                "texture": Classify[2].model[1].name
-            }, {
-                "重量": Classify[0].model[0].name,
-                "size": Classify[1].model[2].name,
-                "texture": Classify[2].model[0].name
-
-            }, {
-                "重量": Classify[0].model[0].name,
-                "size": Classify[1].model[2].name,
-                "texture": Classify[2].model[1].name
-            }, {
-                "重量": Classify[0].model[1].name, //第二个
-                "size": Classify[1].model[0].name,
-                "texture": Classify[2].model[0].name
-            }, {
-                "重量": Classify[0].model[1].name,
-                "size": Classify[1].model[0].name,
-                "texture": Classify[2].model[1].name
-            }, {
-                "重量": Classify[0].model[1].name,
-                "size": Classify[1].model[1].name,
-                "texture": Classify[2].model[0].name
-            }, {
-                "重量": Classify[0].model[1].name,
-                "size": Classify[1].model[1].name,
-                "texture": Classify[2].model[1].name
-            }, {
-                "重量": Classify[0].model[1].name,
-                "size": Classify[1].model[2].name,
-                "texture": Classify[2].model[0].name
-            }, {
-                "重量": Classify[0].model[1].name,
-                "size": Classify[1].model[2].name,
-                "texture": Classify[2].model[1].name
-            }, {
-                "重量": Classify[0].model[2].name, //第三个
-                "size": Classify[1].model[0].name,
-                "texture": Classify[2].model[0].name
-            }, {
-                "重量": Classify[0].model[2].name,
-                "size": Classify[1].model[0].name,
-                "texture": Classify[2].model[1].name
-            }, {
-                "重量": Classify[0].model[2].name,
-                "size": Classify[1].model[1].name,
-                "texture": Classify[2].model[0].name
-            }, {
-                "重量": Classify[0].model[2].name,
-                "size": Classify[1].model[1].name,
-                "texture": Classify[2].model[1].name
-            }, {
-                "重量": Classify[0].model[2].name,
-                "size": Classify[1].model[2].name,
-                "texture": Classify[2].model[0].name
-            }, {
-                "重量": Classify[0].model[2].name,
-                "size": Classify[1].model[2].name,
-                "texture": Classify[2].model[1].name
-            }],
-            done: function (res) {
-                merge(res);
-            }
+        laydate.render({
+            elem: '#time_pick',
+            type: 'datetime'
         });
+
+        form.on('submit(submin_btn)',function(data){
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            return false;
+        });
+
+        function tableInit() {
+            table.init('parse-table', {
+
+            });
+        }
     });
 });

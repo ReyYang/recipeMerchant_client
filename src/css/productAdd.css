@@ -246,11 +246,6 @@ div.clear-float {
 
 
 
-
-
-
-
-
 .main {
     margin-top: 50px;
 }
@@ -369,14 +364,10 @@ div.clear-float {
 }
 
 /* table的悬浮颜色 */
-.layui-table tbody tr:hover {
+/* .layui-table tbody tr:hover {
     background-color: transparent;
-}
+} */
 
-/* layui 数据表格列宽自适应出现横向滚动条的解决方案 */
-.layui-body {
-   
-}
 
 /* 添加型号面板样式 */
 .addModelImg>.layui-form-onswitch {
@@ -560,7 +551,7 @@ div.clear-float {
 }
 
 .model-name-div>.layui-form-checked span,
-.layui-form-checked:hover span {
+.model-name-div>.layui-form-checked:hover span {
     background-color: #6D676E;
 }
 
@@ -594,13 +585,82 @@ div.clear-float {
 }
 
 /* 商品类型数据表格样式 */
-.noshowtable {
+.showtable {
     margin-top: 35px;
+    display: block;
+}
+.noshowtable {
+    display: none;
 }
 
+/* 运费及其他设计 */
 
+.cell-time .layui-form-radio>i:hover, .layui-form-radioed>i{
+    color: #000000;
+}
 
+.other-set-div>.layui-form-checked[lay-skin=primary] i{
+    border-color: #000000;
+    background-color: #000000;
+    color: #fff;
+}
 
+.other-set-div>.layui-form-checkbox[lay-skin=primary]:hover i{
+    border-color: #000000;
+}
+/* 商品详情 */
+.pro_details{
+    border: 1px solid #dddddd;
+}
+.pro_details .layui-card-header{
+    height: 50px;
+    background-color: #f1f1f1;
+    line-height: 50px;
+    position: relative;
+}
+.pro_details .layui-card-header i{
+    background-color: #000000;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 25px;
+    width: 25px;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    color: #ffffff;
+    font-weight: bolder;
+    font-size: 18px;
+    opacity: 0;
+    transition: all 0.5s linear;
+}
+.pro_details .layui-card-header:hover i{
+    opacity: 1;
+}
+
+.pro_details_image .upload-img-preview{
+    width: 222px;
+    height: 222px;
+    border: 1px dashed #dddddd;
+    margin-bottom: 30px;
+    cursor: pointer;
+    position: relative;
+}
+
+.pro_details_image .upload-ops{
+    width: 222px;
+    height: 222px;
+    position: absolute;
+    top: 45px;
+    left: 17px;
+    background-color: rgba(0, 0, 0, .5);
+}
+.pro_details_image .upload-ops a{
+    color: #ffffff;
+    line-height: 222px;
+    display: block;
+    width: 222px;
+    text-align: center;
+}
 
 
 div.footer {
